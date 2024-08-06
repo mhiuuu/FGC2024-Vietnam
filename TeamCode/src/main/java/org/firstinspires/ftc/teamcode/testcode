@@ -1,0 +1,87 @@
+package org.firstinspires.ftc.teamcode;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode ;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp ;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.Servo;
+
+@TeleOp
+public class testcode extends LinearOpMode {
+
+    public double power ( boolean x ) {
+        return ( x ) ? 1 : 0 ;
+    }
+
+    @Override
+    public void runOpMode() {
+        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
+        DcMotor frontRight = hardwareMap.get(DcMotor.class, "rightFront");
+        DcMotor backLeft = hardwareMap.get(DcMotor.class, "leftBack");
+        DcMotor backRight = hardwareMap.get(DcMotor.class, "rightBack");
+        DcMotor mid = hardwareMap.get(DcMotor.class,"mid") ;
+        DcMotor extend1 = hardwareMap.get(DcMotor.class,"frontLinear") ;
+        DcMotor elevate = hardwareMap.get(DcMotor.class,"middleHex");
+        DcMotor extend2 = hardwareMap.get(DcMotor.class,"backLinear") ;
+        Servo servo1 = hardwareMap.get(Servo.class,"s1") ;
+        Servo servo2 = hardwareMap.get(Servo.class,"s2") ;
+        Gamepad prevGamepad = new Gamepad();
+        Gamepad curGamepad = new Gamepad();
+
+        frontLeft.setDirection(DcMotor.Direction.REVERSE);
+        backLeft.setDirection(DcMotor.Direction.REVERSE);
+        servo1.setDirection(Servo.Direction.REVERSE);
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mid.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extend1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        extend2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        elevate.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mid.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        extend1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        extend2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        elevate.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        waitForStart();
+
+        if (isStopRequested()) return;
+
+        while (opModeIsActive()) {
+            prevGamepad.copy(curGamepad);
+            curGamepad.copy(gamepad1);
+
+            double left = -this.gamepad1.left_stick_y;
+            double right = -this.gamepad1.right_stick_y ;
+            double ratio = 0.7 ;
+            if ( gamepad1.right_trigger > 0.05 ) ratio += 0.3 ;
+
+            frontLeft.setPower(left * ratio);
+            frontRight.setPower(right * ratio);
+            backLeft.setPower(left * ratio );
+            backRight.setPower(right * ratio);
+
+            mid.setPower(power(gamepad1.dpad_left) - power(gamepad1.dpad_right)) ;
+            extend1.setPower(power(gamepad1.y) - power(gamepad1.a)) ;
+            extend2.setPower(power(gamepad1.dpad_up) - power(gamepad1.dpad_down)) ;
+            elevate.setPower(power(gamepad1.left_bumper) - gamepad1.left_trigger) ;
+
+            if(!prevGamepad.x && curGamepad.x) {
+                servo1.setPosition(0);
+                servo2.setPosition(0);
+            }
+            if(!prevGamepad.b && curGamepad.b) {
+                servo1.setPosition(0.25);
+                servo2.setPosition(0.25);
+            }
+        }
+
+    }
+}
