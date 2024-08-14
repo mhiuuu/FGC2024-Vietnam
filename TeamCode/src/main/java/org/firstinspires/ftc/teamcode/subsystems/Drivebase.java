@@ -67,16 +67,10 @@ public class Drivebase {
         rightBack.setPower(rightPower * speed);
     }
 
-//    public void setHorizontalMove(double hex_power) {
-//        double power;
-//        if(abs(hex_power) >= 1.0) {
-//            power = Range.clip(hex_power, -1.0, 1.0);
-//        } else {
-//            power = 0;
-//        }
-//        middleWheel.setPower(power);
-//    }
-
+    public void setHorizontalMove(double hex_power) {
+        middleWheel.setPower(hex_power);
+    }
+    
     public int getPosition(DcMotor motor) {
         return motor.getCurrentPosition();
     }
