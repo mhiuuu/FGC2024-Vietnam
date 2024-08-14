@@ -19,6 +19,7 @@ public class Robot {
     private Telemetry telemetry;
     private boolean autoAlign = false;
     private Dataflow dataflow;
+    Gamepad prevGamepad1 ;
 
     public Robot(LinearOpMode linearOpMode) {
         this.telemetry = linearOpMode.telemetry;
@@ -35,6 +36,8 @@ public class Robot {
 
     public void loop(LinearOpMode linearOpMode) {
         while (linearOpMode.opModeIsActive()) {
+            prevGamepad1.copy( gamepad1 );
+
             double leftY = gamepad1.left_stick_y;
             double rightY = gamepad1.right_stick_y;
 
@@ -42,18 +45,24 @@ public class Robot {
             double rightPower = Range.clip(rightY, -1.0, 1.0);
 
             driveBase.setMotorsPower(leftPower, rightPower);
+            driveBase.setHorizontalMove( gamepad1.left_trigger - gamepad1.right_trigger );
 
-//          driveBase.setHorizontalMove(-gamepad1.left_trigger);
-//          driveBase.setHorizontalMove(gamepad1.right_trigger);
-
-            if (gamepad1.x) {
+            if( !prevGamepad1.right_bumper && gamepad1.right_bumper )  {
                 driveBase.boost();
             }
+
+            linear.setAllLinear( pow(gamepad1.dpad_left) - pow(gamepad1.dpad_right));
+            linear.setElevator( pow(gamepad1.dpad_up) - pow(gamepad1.dpad_down));
+            if ( gamepad1.x ){ linear.setLinearServo(); }
 
             dataflow.sendDatasToTelemetry(new String[]{"LeftFront:", "LeftBack:", "RightFront:", "RightBack:"},
                     driveBase.getLeftPower(), driveBase.getRightPower());
 
             linearOpMode.telemetry.update();
         }
+    }
+
+     public double pow ( boolean x ){
+        return ( x ) ? 1 : 0 ;
     }
 }
