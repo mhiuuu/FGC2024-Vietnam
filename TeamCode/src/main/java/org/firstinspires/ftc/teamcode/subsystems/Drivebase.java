@@ -33,7 +33,6 @@ public class Drivebase {
         rightFront = hardwareMap.get(DcMotorEx.class,"rightFront");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        middleWheel = hardwareMap.get(DcMotorEx.class, "middleHex");
 
         motors = Arrays.asList(leftBack, leftFront, rightBack, rightFront);
         rightMotors = Arrays.asList(rightFront, rightBack);
@@ -49,16 +48,6 @@ public class Drivebase {
         leftBack.setPower(leftPower * speed);
         rightFront.setPower(rightPower * speed);
         rightBack.setPower(rightPower * speed);
-    }
-
-    public void setHorizontalMove(double hex_power) {
-        double power;
-        power = Range.clip(hex_power, -1.0, 1.0);
-        middleWheel.setPower(power);
-    }
-
-    public int getPosition(DcMotor motor) {
-        return motor.getCurrentPosition();
     }
 
     public void boost() {

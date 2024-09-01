@@ -31,8 +31,8 @@ public class Constants {
     }
 
     public static final class SWIVEL {
-        public static final double TURN_SPEED = 0.4;
-        public static final double HEADING_THRESHOLD = 0.2;
+        public static final double TURN_SPEED = 0.5;
+        public static final double HEADING_THRESHOLD = 0.3;
         public static final double P_TURN_GAIN = 0.02;
         public static final double I_TURN_GAIN = 0;
         public static final double D_TURN_GAIN = 0;

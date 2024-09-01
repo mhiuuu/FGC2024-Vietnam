@@ -5,58 +5,44 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 public class Linear {
-    private DcMotorEx frontLinear;
-    private DcMotorEx backLinear;
-    private DcMotorEx middleLinear;
-    private CRServo servo1;
-    private CRServo servo2;
+    private DcMotorEx leftLinear;
+    private DcMotorEx rightLinear;
     private final HardwareMap hardwareMap;
-
     public Linear(OpMode opMode) {
         this.hardwareMap = opMode.hardwareMap;
     }
 
     public void init() {
-        frontLinear = hardwareMap.get(DcMotorEx.class, "frontLinear");
-        backLinear = hardwareMap.get(DcMotorEx.class, "backLinear");
-        middleLinear = hardwareMap.get(DcMotorEx.class, "middleLinear");
-        servo1 = hardwareMap.get(CRServo.class, "servo1");
-        servo2 = hardwareMap.get(CRServo.class, "servo2");
+        leftLinear = hardwareMap.get(DcMotorEx.class, "leftLinear");
+        rightLinear = hardwareMap.get(DcMotorEx.class, "rightLinear");
 
-        servo1.setDirection(CRServo.Direction.REVERSE);
-        servo2.setDirection(CRServo.Direction.FORWARD);
+        leftLinear.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        rightLinear.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
-        frontLinear.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        backLinear.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        middleLinear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftLinear.setDirection(DcMotor.Direction.REVERSE);
 
-        frontLinear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        backLinear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        middleLinear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftLinear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        rightLinear.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
     }
 
-    public void setFrontLinear(double pow) {
-        frontLinear.setPower(pow);
+    private void setLeftLinear(double pow) {
+        leftLinear.setPower(pow);
     }
 
-    public void setBackLinear(double pow) {
-        backLinear.setPower(pow);
+    private void setRightLinear(double pow) {
+        rightLinear.setPower(pow);
     }
 
-    public void setMiddleLinear(double pow) {
-        middleLinear.setPower(pow);
+    public void setAllLinear(boolean x1, boolean x2) {
+        double pow = power(x1) - power(x2);
+        setLeftLinear(pow);
+        setRightLinear(pow);
     }
 
-    public void setAllLinear(double pow) {
-        setBackLinear(pow);
-        setFrontLinear(pow);
-        setMiddleLinear(pow);
-    }
-
-    public void setLinearServo(double pow) {
-        servo2.setPower(pow);
-        servo1.setPower(pow);
+    private double power(boolean pressed) {
+        return (pressed) ? 1:0;
     }
 }

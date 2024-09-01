@@ -3,15 +3,15 @@ package org.firstinspires.ftc.teamcode.opModes;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.robot.Robot;
+import org.firstinspires.ftc.teamcode.robot.SemiAuto;
 
-@TeleOp(name = "Robot Autonomous", group = "Robot")
+@TeleOp(name = "DÙNG CÁI NÀY", group = "Robot")
 public class Main extends LinearOpMode {
-    private Robot robot;
+    private SemiAuto robot;
 
     @Override
     public void runOpMode() {
-        robot = new Robot(this);
+        robot = new SemiAuto(this);
         robot.init();
 
         waitForStart();
