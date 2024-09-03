@@ -18,8 +18,8 @@ public class SemiAuto {
     private Telemetry telemetry;
     private Dataflow dataflow;
     private AutoSystems autoSystems;
-    private enum RobotState { IDLE, TURNING, MANUAL_CONTROL }
-    private RobotState currentState;
+    //private enum RobotState { IDLE, TURNING, MANUAL_CONTROL }
+    //private RobotState currentState;
 
     public SemiAuto(LinearOpMode linearOpMode) {
         this.telemetry = linearOpMode.telemetry;
@@ -29,7 +29,7 @@ public class SemiAuto {
         this.gamepad2 = linearOpMode.gamepad2;
         this.dataflow = new Dataflow(this.telemetry);
         this.autoSystems = new AutoSystems(linearOpMode);
-        this.currentState = RobotState.IDLE;
+        //this.currentState = RobotState.IDLE;
         this.linear = new Linear(linearOpMode);
     }
 
@@ -41,24 +41,9 @@ public class SemiAuto {
 
     public void loop(LinearOpMode linearOpMode) {
         while (linearOpMode.opModeIsActive()) {
-            switch (currentState) {
-                case IDLE:
-                    if (gamepad1.circle) {
-                        currentState = RobotState.TURNING;
-                    } else if (gamepad1.start) {
-                        currentState = RobotState.MANUAL_CONTROL;
-                    }
-                    break;
-                case TURNING:
-                    turning();
-                    currentState = RobotState.MANUAL_CONTROL;
-                    break;
-                case MANUAL_CONTROL:
-                    manual_control();
-                    break;
-            }
+            manual_control();
 
-            dataflow.addToAll(new String[]{"LeftBack:", "RightBack:", "Current State:"}, driveBase.getLeftPower(), driveBase.getRightPower(), currentState);
+            dataflow.addToAll(new String[]{"LeftBack:", "RightBack:"}, driveBase.getLeftPower(), driveBase.getRightPower());
             dataflow.sendDatas();
         }
     }
@@ -78,18 +63,33 @@ public class SemiAuto {
         driveBase.setMotorsPower(leftPower, rightPower);
 
         linear.setAllLinear(gamepad1.dpad_up, gamepad1.dpad_down);
-        if (gamepad1.x) {
-            driveBase.boost();
-        }
-        if (gamepad1.circle) {
-            currentState = RobotState.TURNING;
-        }
-        if (gamepad1.triangle) {
-            currentState = RobotState.IDLE;
-        }
-    }
+        driveBase.setInTake(gamepad1.right_trigger - gamepad1.left_trigger);
+        //Right sidee
+        if(gamepad1.dpad_right) {
+            linear.rightServoUp.setPower(1.0);
+        } else if(gamepad1.right_bumper) {
+            linear.rightServoDown.setPower(1.0);
 
-    private double power(boolean pressed) {
-        return (pressed) ? 1:0;
+        } else if(gamepad1.left_bumper) {
+            linear.rightServoDown.setPower(-1.0);
+        } else if(gamepad1.dpad_left) {
+            linear.rightServoUp.setPower(-1.0);
+        //Left side
+        } else if(gamepad1.cross) {
+            linear.leftServoUp.setPower(1.0);
+        } else if(gamepad1.triangle) {
+            linear.leftServoUp.setPower(-1.0);
+
+        } else if(gamepad1.circle) {
+            linear.leftServoDown.setPower(1.0);
+        } else if(gamepad1.square) {
+            linear.leftServoDown.setPower(-1.0);
+
+        } else {
+            linear.rightServoDown.setPower(0);
+            linear.rightServoUp.setPower(0);
+            linear.leftServoDown.setPower(0);
+            linear.leftServoUp.setPower(0);
+        }
     }
 }

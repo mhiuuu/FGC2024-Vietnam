@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.Constants.SPEED.*;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
@@ -18,7 +19,8 @@ public class Drivebase {
     private DcMotorEx rightFront;
     private DcMotorEx leftBack;
     private DcMotorEx rightBack;
-    public DcMotorEx middleWheel;
+    public  DcMotorEx middleWheel;
+    private DcMotorEx inTake;
     private final HardwareMap hardwareMap;
     private double speed = NORMAL_DRIVE;
     public List<DcMotorEx> motors, leftMotors, rightMotors;
@@ -33,6 +35,7 @@ public class Drivebase {
         rightFront = hardwareMap.get(DcMotorEx.class,"rightFront");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        inTake = hardwareMap.get(DcMotorImplEx.class, "inTake");
 
         motors = Arrays.asList(leftBack, leftFront, rightBack, rightFront);
         rightMotors = Arrays.asList(rightFront, rightBack);
@@ -86,5 +89,9 @@ public class Drivebase {
         for (DcMotorEx motor : sideMotors) {
             motor.setDirection(Direction);
         }
+    }
+
+    public void setInTake(double pow) {
+        inTake.setPower(Range.clip(pow, -1.0, 1.0));
     }
 }
