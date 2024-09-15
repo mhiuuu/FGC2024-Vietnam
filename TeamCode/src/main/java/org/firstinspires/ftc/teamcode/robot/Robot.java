@@ -55,8 +55,8 @@ public class Robot {
             dataflow.addToAll(new String[]{ "LeftBack:",
                                             "RightBack:",
                                             "Current State:"},
-                                            driveBase.getLeftPower(),
-                                            driveBase.getRightPower(),
+//                                            driveBase.getLeftPower(),
+//                                            driveBase.getRightPower(),
                                             currentState);
             dataflow.sendDatas();
         }
