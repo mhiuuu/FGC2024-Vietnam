@@ -23,9 +23,14 @@ public class Linear {
         upLinear = hardwareMap.get(DcMotorEx.class, "upLinear");
         downLinear = hardwareMap.get(DcMotorEx.class, "downLinear");
         middleLinear = hardwareMap.get(DcMotorEx.class, "middleLinear");
+        servo1 = hardwareMap.get(Servo.class, "servo1");
+        servo2 = hardwareMap.get(Servo.class, "servo2");
 
         upLinear.setDirection(DcMotorSimple.Direction.FORWARD);
         downLinear.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        servo1.setDirection(Servo.Direction.FORWARD);
+        servo2.setDirection(Servo.Direction.REVERSE);
 
         upLinear.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         downLinear.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
