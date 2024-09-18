@@ -7,22 +7,25 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.AutoSystems;
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
+import org.firstinspires.ftc.teamcode.subsystems.IMUHandler;
 import org.firstinspires.ftc.teamcode.subsystems.Linear;
 import org.firstinspires.ftc.teamcode.utils.Dataflow;
 
-public class Robot {
+public class SemiAuto {
     private Gamepad gamepad1;
     private Gamepad gamepad2;
+    private IMUHandler imuHandler;
     private Drivebase driveBase;
     private Linear linear;
     private Telemetry telemetry;
     private Dataflow dataflow;
     private AutoSystems autoSystems;
 
-    private enum RobotState { IDLE, TURNING, MANUAL_CONTROL }
+    private enum RobotState { TURNING, MANUAL_CONTROL }
     private RobotState currentState;
 
-    public Robot(LinearOpMode linearOpMode) {
+    public SemiAuto(LinearOpMode linearOpMode) {
+        this.imuHandler = new IMUHandler(linearOpMode);
         this.telemetry = linearOpMode.telemetry;
         this.driveBase = new Drivebase(linearOpMode);
         this.linear = new Linear(linearOpMode);
@@ -30,21 +33,19 @@ public class Robot {
         this.gamepad2 = linearOpMode.gamepad2;
         this.dataflow = new Dataflow(this.telemetry);
         this.autoSystems = new AutoSystems(linearOpMode);
-        this.currentState = RobotState.IDLE;
+        this.currentState = RobotState.MANUAL_CONTROL;
     }
 
     public void init() {
         driveBase.init();
         autoSystems.init();
         linear.init();
+        imuHandler.init();
     }
 
     public void loop(LinearOpMode linearOpMode) {
         while (linearOpMode.opModeIsActive()) {
             switch (currentState) {
-                case IDLE:
-                    idleState();
-                    break;
                 case TURNING:
                     turningState();
                     break;
@@ -52,21 +53,15 @@ public class Robot {
                     manualControlState();
                     break;
             }
-            dataflow.addToAll(new String[]{ "LeftBack:",
-                                            "RightBack:",
-                                            "Current State:"},
-//                                            driveBase.getLeftPower(),
-//                                            driveBase.getRightPower(),
-                                            currentState);
+            dataflow.addToAll(new String[]{ "Left Power:",
+                                            "Right Power:",
+                                            "Current State:",
+                                            "Current heading"},
+                                            driveBase.getLeftPower(),
+                                            driveBase.getRightPower(),
+                                            currentState,
+                                            imuHandler.getHeading());
             dataflow.sendDatas();
-        }
-    }
-
-    private void idleState() {
-        if (gamepad1.circle) {
-            currentState = RobotState.TURNING;
-        } else if (gamepad1.start) {
-            currentState = RobotState.MANUAL_CONTROL;
         }
     }
 
@@ -77,42 +72,33 @@ public class Robot {
     }
 
     private void manualControlState() {
-        //Joy-stick
+        setGamepad1();
+        setGamepad2();
+    }
+
+    private void setGamepad1() {
         double leftY = gamepad1.left_stick_y;
         double rightY = gamepad1.right_stick_y;
         double leftPower = Range.clip(leftY, -1.0, 1.0);
         double rightPower = Range.clip(rightY, -1.0, 1.0);
-
-        //Triggers and bumpers
         driveBase.setMotorsPower(leftPower, rightPower);
-        driveBase.setHorizontalMove(gamepad1.left_trigger-gamepad1.right_trigger);
-
-        //Dpad
-        if (gamepad1.dpad_up) {
-            linear.setAllLinear(1.0);
-        } else if (gamepad1.dpad_down) {
-            linear.setAllLinear(-1.0);
-        } else if (gamepad1.dpad_left) {
-            linear.setMiddleLinear(1.0);
-        } else if (gamepad1.dpad_right) {
-            linear.setMiddleLinear(-1.0);
-        } else {
-            linear.setAllLinear(0);
-            linear.setMiddleLinear(0);
+        driveBase.setHorizontalMove(gamepad1.right_trigger-gamepad1.left_trigger);
+        if(gamepad1.right_bumper) {
+            driveBase.navigateClaws(1.0);
+        } else if(gamepad1.left_bumper) {
+            driveBase.navigateClaws(0.0);
         }
+    }
 
-        //Color pad
-        if (gamepad1.circle) {
-            currentState = RobotState.TURNING;
-        }
+    public void setGamepad2() {
+        linear.setUpLinear(-gamepad2.left_stick_y);
+        linear.setDownLinear(gamepad2.right_stick_y);
+        linear.setMiddleLinear(gamepad2.left_trigger - gamepad2.right_trigger);
 
-        if(gamepad1.triangle) {
+        if(gamepad2.dpad_up) {
             linear.setLinearServo(1.0);
-        } else if(gamepad1.cross) {
-            linear.setLinearServo(0.05);
-        } else if(gamepad1.square) {
-            linear.setLinearServo(0.35);
+        } else if(gamepad2.dpad_down) {
+            linear.setLinearServo(0.3);
         }
-
     }
 }

@@ -33,27 +33,21 @@ public class AutoSystems extends Drivebase {
     }
 
     public void turnToHeading(double heading) {
-        while (linearOpMode.opModeIsActive() && !onHeading(TURN_SPEED, heading, P_TURN_GAIN)) {
+        while (linearOpMode.opModeIsActive() && !onHeading(TURN_SPEED, howMuchTurning(heading), P_TURN_GAIN)) {
             telemetry.update();
         }
         setMotorsPower(0, 0);
     }
 
-    private double whichWayToTurn(double targetHeading) {
-        double currentHeading = imuHandler.getHeading();
-        if (currentHeading >= -targetHeading && currentHeading <= targetHeading) {
-            return targetHeading - abs(currentHeading);
+    private double howMuchTurning(double targetHeading) {
+        double current = imuHandler.getHeading();
+        double difference = targetHeading - current;
+        difference = (difference + 360) % 360;
+        if (difference > 180) {
+            difference -= 360;
         }
-        return abs(currentHeading) - targetHeading;
-    }
 
-    public void holdHeading(double heading, double holdTime) {
-        ElapsedTime holdTimer = new ElapsedTime();
-        holdTimer.reset();
-        while (holdTimer.time() < holdTime) {
-            onHeading(TURN_SPEED, heading, P_TURN_GAIN);
-        }
-        setMotorsPower(0, 0);
+        return difference;
     }
 
     private boolean onHeading(double speed, double heading, double PCoeff) {
@@ -72,8 +66,8 @@ public class AutoSystems extends Drivebase {
             onTarget = true;
         } else {
             steer = getSteer(error, PCoeff);
-            rightSpeed = speed * steer;
-            leftSpeed = -rightSpeed;
+            leftSpeed = speed * steer;
+            rightSpeed = -leftSpeed;
         }
 
         setMotorsPower(leftSpeed, rightSpeed);
@@ -102,7 +96,7 @@ public class AutoSystems extends Drivebase {
 
     public void horizontalMove(double moveTarget) {
         setUpForEncoder(moveTarget, middleWheel, HD_SMALL_COUNTS_PER_INCH);
-        middleWheel.setPower(AUTO_DRIVE);
+        middleWheel.setPower(1.0);
         while (linearOpMode.opModeIsActive() && middleWheel.isBusy()) {
             // Wait for the movement to complete
         }

@@ -26,7 +26,8 @@ public class IMUHandler {
     }
 
     public double getHeading() {
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        return (heading > 0) ? heading : heading + 360;
     }
 
     public void resetHeading() {

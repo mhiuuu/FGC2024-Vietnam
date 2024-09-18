@@ -23,14 +23,9 @@ public class Linear {
         upLinear = hardwareMap.get(DcMotorEx.class, "upLinear");
         downLinear = hardwareMap.get(DcMotorEx.class, "downLinear");
         middleLinear = hardwareMap.get(DcMotorEx.class, "middleLinear");
-//        servo1 = hardwareMap.get(Servo.class, "servo1");
-//        servo2 = hardwareMap.get(Servo.class, "servo2");
 
-        upLinear.setDirection(DcMotorSimple.Direction.REVERSE);
-        downLinear.setDirection(DcMotorSimple.Direction.FORWARD);
-
-//        servo1.setDirection(Servo.Direction.FORWARD);
-//        servo2.setDirection(Servo.Direction.REVERSE);
+        upLinear.setDirection(DcMotorSimple.Direction.FORWARD);
+        downLinear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         upLinear.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         downLinear.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -53,10 +48,6 @@ public class Linear {
         middleLinear.setPower(pow);
     }
 
-    public void setAllLinear(double pow) {
-        setDownLinear(pow);
-        setUpLinear(pow);
-    }
 
     public void setLinearServo(double pos) {
         servo2.setPosition(pos);

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.tests;
 import static org.firstinspires.ftc.teamcode.Constants.BASE.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.utils.Dataflow;
 
 @Autonomous(name="MotorCalibration")
+@Disabled
 public class MotorCalibration extends LinearOpMode {
     private DcMotorEx motor;
     Dataflow dataflow = new Dataflow(telemetry);

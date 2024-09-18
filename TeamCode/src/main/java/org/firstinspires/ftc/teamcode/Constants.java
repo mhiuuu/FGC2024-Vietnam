@@ -1,25 +1,25 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Config
+@Disabled
 public class Constants {
 
     @Config
     public static class BASE {
         public static double COUNTS_PER_HD_MOTOR_REV = 28;
         public static double COUNTS_PER_HEX_MOTOR_REV = 288.0;
-        public static double DRIVE_GEAR_REDUCTION = 13.0321;
+        //3:1=2.89:1  4:1==3.61:1 5:1=5.32:1
+        public static double DRIVE_GEAR_REDUCTION = 2.89*3.61;
         public static double WHEEL_DIAMETER_INCHES = 9.00 / 2.54;
         public static double SMALL_WHEEL_DIAMETER_INCHES = 6.00 / 2.54;
-        public static double CORE_HEX_RPM = 125;
-        public static double DC_HEX_RPM = 300;
-
         // These values are computed based on the above constants.
         public static double HD_COUNTS_PER_INCH = (COUNTS_PER_HD_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
         public static double HD_SMALL_COUNTS_PER_INCH = (COUNTS_PER_HD_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (SMALL_WHEEL_DIAMETER_INCHES * Math.PI);
-        public static double HEX_COUNT_PER_INCH = (COUNTS_PER_HEX_MOTOR_REV) / (WHEEL_DIAMETER_INCHES * Math.PI);
-    }
+
+            }
 
     @Config
     public static class SPEED {

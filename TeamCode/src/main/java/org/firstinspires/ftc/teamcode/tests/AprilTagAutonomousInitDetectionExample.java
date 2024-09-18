@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.subsystems.AprilTagCamera;
 
 @Autonomous(name = "AprilTag Detection Example")
+@Disabled
 public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
     private AprilTagCamera aprilTagCamera;

@@ -4,6 +4,7 @@ import static org.firstinspires.ftc.teamcode.Constants.SPEED.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -18,7 +19,8 @@ public class Drivebase {
     private DcMotorEx rightFront;
     private DcMotorEx leftBack;
     private DcMotorEx rightBack;
-    public DcMotorEx middleWheel;
+    public  DcMotorEx middleWheel;
+    private Servo clawLeft, clawRight;
     private final HardwareMap hardwareMap;
     private double speed = NORMAL_DRIVE;
     public List<DcMotorEx> motors, leftMotors, rightMotors;
@@ -33,14 +35,16 @@ public class Drivebase {
         rightFront = hardwareMap.get(DcMotorEx.class,"rightFront");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
-        middleWheel = hardwareMap.get(DcMotorEx.class, "middleHex");
+        middleWheel = hardwareMap.get(DcMotorEx.class, "middleWheel");
+        clawLeft = hardwareMap.get(Servo.class, "clawLeft");
+        clawRight = hardwareMap.get(Servo.class, "clawRight");
 
         motors = Arrays.asList(leftBack, leftFront, rightBack, rightFront);
         rightMotors = Arrays.asList(rightFront, rightBack);
         leftMotors = Arrays.asList(leftFront, leftBack);
 
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         setDirection(DcMotorSimple.Direction.REVERSE, rightMotors);
     }
 
@@ -97,5 +101,10 @@ public class Drivebase {
         for (DcMotorEx motor : sideMotors) {
             motor.setDirection(Direction);
         }
+    }
+
+    public void navigateClaws(double position) {
+        clawRight.setPosition(position);
+        clawLeft.setPosition(position);
     }
 }
