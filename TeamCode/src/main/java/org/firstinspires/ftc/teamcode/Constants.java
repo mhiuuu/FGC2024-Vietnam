@@ -10,7 +10,6 @@ public class Constants {
     @Config
     public static class BASE {
         public static double COUNTS_PER_HD_MOTOR_REV = 28;
-        public static double COUNTS_PER_HEX_MOTOR_REV = 288.0;
         //3:1=2.89:1  4:1==3.61:1 5:1=5.32:1
         public static double DRIVE_GEAR_REDUCTION = 2.89*3.61;
         public static double WHEEL_DIAMETER_INCHES = 9.00 / 2.54;
@@ -23,8 +22,8 @@ public class Constants {
 
     @Config
     public static class SPEED {
-        public static double BOOST_DRIVE = 0.4;
-        public static double NORMAL_DRIVE = 0.2;
+        public static double BOOST_DRIVE = 0.6;
+        public static double NORMAL_DRIVE = 0.4;
         public static double LINEAR_SPEED = 1.0;
         public static double AUTO_DRIVE = 0.2;
     }
@@ -37,9 +36,9 @@ public class Constants {
 
     @Config
     public static class SWIVEL {
-        public static double TURN_SPEED = 0.3;
-        public static double HEADING_THRESHOLD = 0.2;
-        public static double P_TURN_GAIN = 0.02;
+        public static double TURN_SPEED = 0.4;
+        public static double HEADING_THRESHOLD = 0.5;
+        public static double P_TURN_GAIN = 0.01;
     }
 
     @Config

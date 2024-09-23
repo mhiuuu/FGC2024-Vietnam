@@ -33,8 +33,8 @@ public class AprilTagCamera {
 
     double tagsize = 0.160;
 
-    int left = 0;
-    int right = 20;
+    int left = 100;
+    int right = 107;
 
     AprilTagDetection tagOfInterest = null;
 

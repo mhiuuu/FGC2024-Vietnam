@@ -36,7 +36,7 @@ public class AutoSystems extends Drivebase {
         while (linearOpMode.opModeIsActive() && !onHeading(TURN_SPEED, howMuchTurning(heading), P_TURN_GAIN)) {
             telemetry.update();
         }
-        setMotorsPower(0, 0);
+        setMotorsPower(0, 0, 0);
     }
 
     private double howMuchTurning(double targetHeading) {
@@ -70,7 +70,7 @@ public class AutoSystems extends Drivebase {
             rightSpeed = -leftSpeed;
         }
 
-        setMotorsPower(leftSpeed, rightSpeed);
+        setMotorsPower(leftSpeed, rightSpeed, 0);
         dataflow.addToAll(new String[] {"Target", "Err", "Current heading", "Speed left", "Speed right", "Runtime"},
                                         heading, error, imuHandler.getHeading(), leftSpeed, rightSpeed, runtime);
         dataflow.sendDatas();
@@ -88,6 +88,7 @@ public class AutoSystems extends Drivebase {
         return Range.clip(error * PCoeff, -1, 1);
     }
 
+    
     private void setUpForEncoder(double moveTarget, DcMotorEx motorEx, double COUNTS_PER_INCH) {
         int newTarget = motorEx.getCurrentPosition() + (int) (moveTarget * COUNTS_PER_INCH);
         motorEx.setTargetPosition(newTarget);

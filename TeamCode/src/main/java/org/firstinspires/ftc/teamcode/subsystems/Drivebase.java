@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.Constants.SPEED.*;
+
+
+import static org.firstinspires.ftc.teamcode.Constants.SPEED.NORMAL_DRIVE;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -20,9 +22,8 @@ public class Drivebase {
     private DcMotorEx leftBack;
     private DcMotorEx rightBack;
     public  DcMotorEx middleWheel;
-    private Servo clawLeft, clawRight;
+    private CRServo clawLeft, clawRight;
     private final HardwareMap hardwareMap;
-    private double speed = NORMAL_DRIVE;
     public List<DcMotorEx> motors, leftMotors, rightMotors;
 
 
@@ -36,8 +37,12 @@ public class Drivebase {
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         middleWheel = hardwareMap.get(DcMotorEx.class, "middleWheel");
-        clawLeft = hardwareMap.get(Servo.class, "clawLeft");
-        clawRight = hardwareMap.get(Servo.class, "clawRight");
+
+        clawLeft = hardwareMap.get(CRServo.class, "clawLeft");
+        clawRight = hardwareMap.get(CRServo.class, "clawRight");
+
+        clawLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        clawRight.setDirection(DcMotorSimple.Direction.FORWARD);
 
         motors = Arrays.asList(leftBack, leftFront, rightBack, rightFront);
         rightMotors = Arrays.asList(rightFront, rightBack);
@@ -48,7 +53,7 @@ public class Drivebase {
         setDirection(DcMotorSimple.Direction.REVERSE, rightMotors);
     }
 
-    public void setMotorsPower(double leftPower, double rightPower){
+    public void setMotorsPower(double leftPower, double rightPower, double speed){
         leftFront.setPower(leftPower * speed);
         leftBack.setPower(leftPower * speed);
         rightFront.setPower(rightPower * speed);
@@ -63,14 +68,6 @@ public class Drivebase {
 
     public int getPosition(DcMotor motor) {
         return motor.getCurrentPosition();
-    }
-
-    public void boost() {
-        if(speed == NORMAL_DRIVE) {
-            speed = BOOST_DRIVE;
-        } else {
-            speed = NORMAL_DRIVE;
-        }
     }
 
     public double getPower(DcMotorEx motorEx) {
@@ -104,7 +101,7 @@ public class Drivebase {
     }
 
     public void navigateClaws(double position) {
-        clawRight.setPosition(position);
-        clawLeft.setPosition(position);
+        clawRight.setPower(position);
+        clawLeft.setPower(position);
     }
 }

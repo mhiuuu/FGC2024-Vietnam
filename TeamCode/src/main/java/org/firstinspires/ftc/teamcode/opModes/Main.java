@@ -16,7 +16,7 @@ public class Main extends LinearOpMode {
         robot.init();
 
         waitForStart();
-
+        
         if (opModeIsActive()) {
             robot.loop(this);
         }

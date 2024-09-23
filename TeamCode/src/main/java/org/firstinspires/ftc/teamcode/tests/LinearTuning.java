@@ -34,14 +34,6 @@ public class LinearTuning extends LinearOpMode {
             } else {
                 linear.setUpLinear(0);
             }
-
-            if(gamepad1.left_bumper) {
-                linear.setAllLinear(1.0);
-            } else if(gamepad1.right_bumper) {
-                linear.setAllLinear(-1.0);
-            } else {
-                linear.setAllLinear(0);
-            }
         }
     }
 }

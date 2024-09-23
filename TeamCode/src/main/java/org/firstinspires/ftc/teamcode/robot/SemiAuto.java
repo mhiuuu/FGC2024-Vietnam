@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import static org.firstinspires.ftc.teamcode.Constants.FIELD.HORIZONTAL_AUTO_REQUIREMENT;
+import static org.firstinspires.ftc.teamcode.Constants.SPEED.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
@@ -20,8 +23,8 @@ public class SemiAuto {
     private Telemetry telemetry;
     private Dataflow dataflow;
     private AutoSystems autoSystems;
-
-    private enum RobotState { TURNING, MANUAL_CONTROL }
+    private double speed = NORMAL_DRIVE;
+    private enum RobotState { TURNING, MANUAL_CONTROL, HORIZONTAL_MOVE }
     private RobotState currentState;
 
     public SemiAuto(LinearOpMode linearOpMode) {
@@ -52,6 +55,9 @@ public class SemiAuto {
                 case MANUAL_CONTROL:
                     manualControlState();
                     break;
+                case HORIZONTAL_MOVE:
+                    horizontalMove();
+                    break;
             }
             dataflow.addToAll(new String[]{ "Left Power:",
                                             "Right Power:",
@@ -81,7 +87,7 @@ public class SemiAuto {
         double rightY = gamepad1.right_stick_y;
         double leftPower = Range.clip(leftY, -1.0, 1.0);
         double rightPower = Range.clip(rightY, -1.0, 1.0);
-        driveBase.setMotorsPower(leftPower, rightPower);
+        driveBase.setMotorsPower(leftPower, rightPower, speed);
         driveBase.setHorizontalMove(gamepad1.right_trigger-gamepad1.left_trigger);
         if(gamepad1.right_bumper) {
             driveBase.navigateClaws(1.0);
@@ -90,7 +96,7 @@ public class SemiAuto {
         }
     }
 
-    public void setGamepad2() {
+    private void setGamepad2() {
         linear.setUpLinear(-gamepad2.left_stick_y);
         linear.setDownLinear(gamepad2.right_stick_y);
         linear.setMiddleLinear(gamepad2.left_trigger - gamepad2.right_trigger);
@@ -100,5 +106,11 @@ public class SemiAuto {
         } else if(gamepad2.dpad_down) {
             linear.setLinearServo(0.3);
         }
+    }
+
+    private void horizontalMove() {
+        autoSystems.horizontalMove(HORIZONTAL_AUTO_REQUIREMENT);
+        currentState = RobotState.MANUAL_CONTROL;
+        gamepad1.rumble(100);
     }
 }
