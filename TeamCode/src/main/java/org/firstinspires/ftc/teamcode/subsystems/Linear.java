@@ -73,7 +73,7 @@ public class Linear {
 
     public void isEnd(Gamepad gamepad) {
         if (limit_switch.isPressed() && !hasRumbled) {
-            gamepad.rumble(300);
+            gamepad.rumble(1000);
             hasRumbled = true;
         } else if (!limit_switch.isPressed()) {
             hasRumbled = false;
