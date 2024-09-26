@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot;
-
-import static org.firstinspires.ftc.teamcode.Constants.FIELD.HORIZONTAL_AUTO_REQUIREMENT;
 import static org.firstinspires.ftc.teamcode.Constants.SPEED.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -24,8 +23,6 @@ public class SemiAuto {
     private Dataflow dataflow;
     private AutoSystems autoSystems;
     private double speed = NORMAL_DRIVE;
-    private enum RobotState { TURNING, MANUAL_CONTROL, HORIZONTAL_MOVE }
-    private RobotState currentState;
 
     public SemiAuto(LinearOpMode linearOpMode) {
         this.imuHandler = new IMUHandler(linearOpMode);
@@ -36,7 +33,6 @@ public class SemiAuto {
         this.gamepad2 = linearOpMode.gamepad2;
         this.dataflow = new Dataflow(this.telemetry);
         this.autoSystems = new AutoSystems(linearOpMode);
-        this.currentState = RobotState.MANUAL_CONTROL;
     }
 
     public void init() {
@@ -48,38 +44,12 @@ public class SemiAuto {
 
     public void loop(LinearOpMode linearOpMode) {
         while (linearOpMode.opModeIsActive()) {
-            switch (currentState) {
-                case TURNING:
-                    turningState();
-                    break;
-                case MANUAL_CONTROL:
-                    manualControlState();
-                    break;
-                case HORIZONTAL_MOVE:
-                    horizontalMove();
-                    break;
-            }
-            dataflow.addToAll(new String[]{ "Left Power:",
-                                            "Right Power:",
-                                            "Current State:",
-                                            "Current heading"},
-                                            driveBase.getLeftPower(),
-                                            driveBase.getRightPower(),
-                                            currentState,
-                                            imuHandler.getHeading());
+            setGamepad1();
+            setGamepad2();
+            dataflow.addToAll(new String[]{ "Left Power:", "Right Power:", "Current heading"},
+                    driveBase.getLeftPower(), driveBase.getRightPower(), imuHandler.getHeading());
             dataflow.sendDatas();
         }
-    }
-
-    private void turningState() {
-        autoSystems.turnToHeading(90);
-        currentState = RobotState.MANUAL_CONTROL;
-        gamepad1.rumble(100);
-    }
-
-    private void manualControlState() {
-        setGamepad1();
-        setGamepad2();
     }
 
     private void setGamepad1() {
@@ -88,29 +58,45 @@ public class SemiAuto {
         double leftPower = Range.clip(leftY, -1.0, 1.0);
         double rightPower = Range.clip(rightY, -1.0, 1.0);
         driveBase.setMotorsPower(leftPower, rightPower, speed);
-        driveBase.setHorizontalMove(gamepad1.right_trigger-gamepad1.left_trigger);
-        if(gamepad1.right_bumper) {
+        driveBase.setHorizontalMove(gamepad1.left_trigger-gamepad1.right_trigger);
+        if(gamepad1.right_stick_button) {
             driveBase.navigateClaws(1.0);
-        } else if(gamepad1.left_bumper) {
-            driveBase.navigateClaws(0.0);
+        } else if(gamepad1.left_stick_button) {
+            driveBase.navigateClaws(-1.0);
+        } else {
+            driveBase.navigateClaws(0);
+        }
+
+        if(gamepad1.left_bumper || gamepad1.right_bumper) {
+            speed = BOOST_DRIVE;
+        } else {
+            speed = NORMAL_DRIVE;
+        }
+
+        if(gamepad1.square) {
+            autoSystems.horizontalMove(81/2.54, true);
+        } else if(gamepad1.triangle) {
+            autoSystems.horizontalMove(81/2.54, false);
         }
     }
 
-    private void setGamepad2() {
-        linear.setUpLinear(-gamepad2.left_stick_y);
+    public void setGamepad2() {
+        linear.setUpLinear(gamepad2.left_stick_y);
         linear.setDownLinear(gamepad2.right_stick_y);
         linear.setMiddleLinear(gamepad2.left_trigger - gamepad2.right_trigger);
+        linear.isEnd(gamepad2);
 
         if(gamepad2.dpad_up) {
             linear.setLinearServo(1.0);
         } else if(gamepad2.dpad_down) {
-            linear.setLinearServo(0.3);
+            linear.setLinearServo(0.38);
         }
-    }
 
-    private void horizontalMove() {
-        autoSystems.horizontalMove(HORIZONTAL_AUTO_REQUIREMENT);
-        currentState = RobotState.MANUAL_CONTROL;
-        gamepad1.rumble(100);
+        if(gamepad2.square) {
+            linear.open(0);
+        } else if(gamepad2.circle) {
+            linear.open(1.0);
+        }
+
     }
 }

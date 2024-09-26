@@ -17,6 +17,6 @@ public class HorizontalAlign extends LinearOpMode {
         autoSystems = new AutoSystems(this);
         autoSystems.init();
         waitForStart();
-        autoSystems.horizontalMove(HORIZONTAL_AUTO_REQUIREMENT);
+        autoSystems.horizontalMove(HORIZONTAL_AUTO_REQUIREMENT, true);
     }
 }

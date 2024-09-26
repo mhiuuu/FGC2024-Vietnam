@@ -10,6 +10,7 @@ import static java.lang.Math.abs;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -95,13 +96,17 @@ public class AutoSystems extends Drivebase {
         motorEx.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void horizontalMove(double moveTarget) {
+    public void horizontalMove(double moveTarget, boolean left) {
         setUpForEncoder(moveTarget, middleWheel, HD_SMALL_COUNTS_PER_INCH);
+        if(left) {
+            middleWheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        }
         middleWheel.setPower(1.0);
         while (linearOpMode.opModeIsActive() && middleWheel.isBusy()) {
             // Wait for the movement to complete
         }
         middleWheel.setPower(0);
+        middleWheel.setDirection(DcMotorSimple.Direction.FORWARD);
         middleWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }
